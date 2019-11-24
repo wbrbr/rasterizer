@@ -5,3 +5,7 @@ all: main.o image.o
 
 %.o: src/%.cpp
 	g++ $(CFLAGS) -c $< -o $@
+
+run: all
+	./rasterizer
+	gpicview output.png

@@ -1,6 +1,6 @@
 CFLAGS = -Wall -Wextra -Iinclude/
 
-all: main.o image.o
+all: main.o image.o vec.o
 	g++ $(CFLAGS) $^ -o rasterizer
 
 %.o: src/%.cpp

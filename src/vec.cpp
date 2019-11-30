@@ -12,6 +12,14 @@ vec3 operator/(vec3 v, float s) {
     return (1.f / s) * v;
 }
 
+vec3& operator/=(vec3& v, float s)
+{
+    v.x /= s;
+    v.y /= s;
+    v.z /= s;
+    return v;
+}
+
 vec3 cross(vec3 a, vec3 b)
 {
     return vec3(a.y*b.z - a.z*b.y,

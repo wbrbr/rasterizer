@@ -22,11 +22,17 @@ struct vec3 {
 vec3 operator-(vec3 a, vec3 b);
 vec3 operator*(float s, vec3 v);
 vec3 operator/(vec3 v, float s);
+vec3& operator/=(vec3& v, float s);
 
 vec3 cross(vec3 a, vec3 b);
 float dot(vec3 a, vec3 b);
 float length(vec3 v);
 vec3 normalize(vec3 v);
+
+struct vec4 {
+    float x, y, z, w;
+    vec4(float x, float y, float z, float w): x(x), y(y), z(z), w(w) {};
+};
 
 float edgeFunc(vec2 v0, vec2 v1, vec2 p);
 

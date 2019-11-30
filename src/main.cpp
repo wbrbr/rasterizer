@@ -14,13 +14,15 @@ float* zbuf;
 **/
 
 // TODO: camera, perspective
-// TODO: make vec.cpp
 
 void drawTriangle(vec3 v0, vec3 v1, vec3 v2, Image& img)
 {
+	int xmin = floorf(fmin((v0.x + 1.f) /2.f*(float)WIDTH, fmin((v1.x + 1.f) /2.f*(float)WIDTH, (v2.x + 1.f) /2.f*(float)WIDTH)));
+	xmin = xmin >= 0 ? xmin : 0; 
+	int xmax = ceilf(fmax((v0.x + 1.f) /2.f*(float)WIDTH, fmax((v1.x + 1.f) /2.f*(float)WIDTH, (v2.x + 1.f) /2.f*(float)WIDTH)));
+	xmax = xmax < WIDTH ? xmax : WIDTH-1;
 	// TODO: better traversal algorithm
-
-	for (int px = 0; px < WIDTH; px++)
+	for (int px = xmin; px <= xmax; px++)
 	{
 		for (int py = 0; py < HEIGHT; py++)
 		{
@@ -36,9 +38,9 @@ void drawTriangle(vec3 v0, vec3 v1, vec3 v2, Image& img)
 			if (depth < zbuf[py*WIDTH+px] && w0 >= 0 && w1 >= 0 && w2 >= 0) {
 				zbuf[py*WIDTH+px] = depth;
 				vec3 n = normalize(cross(v1 - v0, v2 - v0));
-				vec3 lightPos(0.f, 0.f, 1.f);
+				vec3 lightPos(0.f, 0.f, -1.f);
 				vec3 p(center.x, center.y, depth);
-				vec3 L = normalize(p - lightPos);
+				vec3 L = normalize(lightPos - p);
 				float ndotl = dot(n, L);
 				vec3 col = (ndotl >= 0.f) ? ndotl * vec3(1.f, 1.f, 1.f) : vec3(0.f, 0.f, 0.f);
 				img.set(px, py, (unsigned char)(col.x*255.99f), (unsigned char)(col.y*255.99f), (unsigned char)(col.z*255.99f));
@@ -59,6 +61,21 @@ void drawMesh(std::vector<float>& vertices, std::vector<int>& indices, Image& im
 		vec3 v0(vertices[3*i0], vertices[3*i0+1], vertices[3*i0+2]);
 		vec3 v1(vertices[3*i1], vertices[3*i1+1], vertices[3*i1+2]);
 		vec3 v2(vertices[3*i2], vertices[3*i2+1], vertices[3*i2+2]);
+
+		/* P =  | -1 0 0 0
+				| 0  1 0 0
+				| 0  0 
+
+				) */
+		
+
+		v0.x /= 1.f - v0.z / 5.f;
+		v0.y /= 1.f - v0.z / 5.f;
+		v1.x /= 1.f - v1.z / 5.f;
+		v1.y /= 1.f - v1.z / 5.f;
+		v2.x /= 1.f - v2.z / 5.f;
+		v2.y /= 1.f - v2.z / 5.f;
+		// TODO: multiply by proj * view matrices
 		drawTriangle(v0, v1, v2, img);
 	}
 }
@@ -86,8 +103,9 @@ int main() {
 	}
 	std::cout << indices.size() << std::endl;
 	drawMesh(attrib.vertices, indices, image);
-	// drawTriangle(v0, v1, v2, &image);
 	image.write_png("output.png");
+
+	delete[] zbuf;
 	return 0;
 }
 

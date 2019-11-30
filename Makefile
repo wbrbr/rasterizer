@@ -1,4 +1,4 @@
-CFLAGS = -Wall -Wextra -Iinclude/
+CFLAGS = -Wall -Wextra -Iinclude/ -g -Og
 
 all: main.o image.o vec.o
 	g++ $(CFLAGS) $^ -o rasterizer

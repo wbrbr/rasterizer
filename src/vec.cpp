@@ -1,5 +1,15 @@
 #include "vec.hpp"
 
+vec2 operator+(vec2 a, vec2 b)
+{
+    return vec2(a.x + b.x, a.y + b.y);
+}
+
+vec2 operator*(float s, vec2 v)
+{
+    return vec2(s*v.x, s*v.y);
+}
+
 vec3 operator-(vec3 a, vec3 b) {
     return vec3(a.x-b.x, a.y-b.y, a.z-b.z);
 }
@@ -12,11 +22,17 @@ vec3 operator/(vec3 v, float s) {
     return (1.f / s) * v;
 }
 
+vec3& operator*=(vec3& v, float s)
+{
+    v.x *= s;
+    v.y *= s;
+    v.z *= s;
+    return v;
+}
+
 vec3& operator/=(vec3& v, float s)
 {
-    v.x /= s;
-    v.y /= s;
-    v.z /= s;
+    v *= 1.f / s;
     return v;
 }
 

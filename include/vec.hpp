@@ -9,6 +9,9 @@ struct vec2 {
     vec2(float x, float y): x(x), y(y) {}; 
 };
 
+vec2 operator+(vec2 a, vec2 b);
+vec2 operator*(float s, vec2 v);
+
 struct vec3 {
     float x, y, z;
 
@@ -22,6 +25,7 @@ struct vec3 {
 vec3 operator-(vec3 a, vec3 b);
 vec3 operator*(float s, vec3 v);
 vec3 operator/(vec3 v, float s);
+vec3& operator*=(vec3& v, float s);
 vec3& operator/=(vec3& v, float s);
 bool operator==(vec3 a, vec3 b);
 vec3 operator-(vec3 v);

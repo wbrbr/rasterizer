@@ -65,21 +65,21 @@ void drawMesh(std::vector<float>& vertices, std::vector<int>& indices, Image& im
 
 
 		// vertical fov
-		float fov = 60.f * M_PI / 180.f;
+		float fov = 30.f * M_PI / 180.f;
 		
 		// float c = 1.f / tanf(fov/2.f);
-		float c = 3.f;
+		float c = 1.f;
 
 		v0.z = c + 1.f - v0.z;
 		v1.z = c + 1.f - v1.z;
 		v2.z = c + 1.f - v2.z;
 
-		v0.x /= v0.z;
-		v0.y /= v0.z;
-		v1.x /= v1.z;
-		v1.y /= v1.z;
-		v2.x /= v2.z;
-		v2.y /= v2.z;
+		v0.x /= (c + v0.z) * tanf(fov/2.f);
+		v0.y /= (c + v0.z) * tanf(fov/2.f);
+		v1.x /= (c + v1.z) * tanf(fov/2.f);
+		v1.y /= (c + v1.z) * tanf(fov/2.f);
+		v2.x /= (c + v2.z) * tanf(fov/2.f);
+		v2.y /= (c + v2.z) * tanf(fov/2.f);
 
 		float aspectinv = (float)HEIGHT/(float)WIDTH;
 		v0.x *= aspectinv;

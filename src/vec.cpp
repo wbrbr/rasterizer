@@ -20,6 +20,16 @@ vec3& operator/=(vec3& v, float s)
     return v;
 }
 
+bool operator==(vec3 a, vec3 b) 
+{
+    return a.x == b.x && a.y == b.y && a.z == b.z; 
+}
+
+vec3 operator-(vec3 v)
+{
+    return (-1.f) * v;
+}
+
 vec3 cross(vec3 a, vec3 b)
 {
     return vec3(a.y*b.z - a.z*b.y,

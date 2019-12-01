@@ -8,4 +8,4 @@ all: main.o image.o vec.o
 
 run: all
 	./rasterizer
-	gpicview output.png
+	gpicview output.png 2> /dev/null

@@ -4,8 +4,8 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-const int WIDTH = 500;
-const int HEIGHT = 500;
+const int WIDTH = 800;
+const int HEIGHT = 450;
 
 float* zbuf;
 
@@ -37,8 +37,9 @@ void drawTriangle(vec3 v0, vec3 v1, vec3 v2, Image& img)
 			float depth = v0.z * w0 + v1.z * w1 + v2.z * w2;
 			if (depth < zbuf[py*WIDTH+px] && w0 >= 0 && w1 >= 0 && w2 >= 0) {
 				zbuf[py*WIDTH+px] = depth;
-				vec3 n = normalize(cross(v1 - v0, v2 - v0));
-				vec3 lightPos(0.f, 0.f, -1.f);
+				// left handed coordinates
+				vec3 n = -normalize(cross(v1 - v0, v2 - v0));
+				vec3 lightPos(0.f, 0.f, 0.f);
 				vec3 p(center.x, center.y, depth);
 				vec3 L = normalize(lightPos - p);
 				float ndotl = dot(n, L);
@@ -62,19 +63,28 @@ void drawMesh(std::vector<float>& vertices, std::vector<int>& indices, Image& im
 		vec3 v1(vertices[3*i1], vertices[3*i1+1], vertices[3*i1+2]);
 		vec3 v2(vertices[3*i2], vertices[3*i2+1], vertices[3*i2+2]);
 
-		/* P =  | -1 0 0 0
-				| 0  1 0 0
-				| 0  0 
 
-				) */
+		// vertical fov
+		float fov = 60.f * M_PI / 180.f;
 		
+		// float c = 1.f / tanf(fov/2.f);
+		float c = 3.f;
 
-		v0.x /= 1.f - v0.z / 5.f;
-		v0.y /= 1.f - v0.z / 5.f;
-		v1.x /= 1.f - v1.z / 5.f;
-		v1.y /= 1.f - v1.z / 5.f;
-		v2.x /= 1.f - v2.z / 5.f;
-		v2.y /= 1.f - v2.z / 5.f;
+		v0.z = c + 1.f - v0.z;
+		v1.z = c + 1.f - v1.z;
+		v2.z = c + 1.f - v2.z;
+
+		v0.x /= v0.z;
+		v0.y /= v0.z;
+		v1.x /= v1.z;
+		v1.y /= v1.z;
+		v2.x /= v2.z;
+		v2.y /= v2.z;
+
+		float aspectinv = (float)HEIGHT/(float)WIDTH;
+		v0.x *= aspectinv;
+		v1.x *= aspectinv;
+		v2.x *= aspectinv;
 		// TODO: multiply by proj * view matrices
 		drawTriangle(v0, v1, v2, img);
 	}

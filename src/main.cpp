@@ -14,7 +14,7 @@ float* zbuf;
  * https://fgiesen.wordpress.com/2013/02/06/the-barycentric-conspirac/
 **/
 
-// TODO: camera, perspective
+// TODO: perspective correct texture mapping
 
 void drawTriangle(vec3 v0, vec3 v1, vec3 v2, vec2 uv0, vec2 uv1, vec2 uv2, Image& img, Image& tex)
 {

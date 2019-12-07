@@ -10,6 +10,11 @@ vec2 operator*(float s, vec2 v)
     return vec2(s*v.x, s*v.y);
 }
 
+vec2 operator/(vec2 v, float s)
+{
+    return (1.f / s) * v;
+}
+
 vec3 operator-(vec3 a, vec3 b) {
     return vec3(a.x-b.x, a.y-b.y, a.z-b.z);
 }

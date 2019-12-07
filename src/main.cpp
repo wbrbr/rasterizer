@@ -16,7 +16,7 @@ float* zbuf;
 
 // TODO: perspective correct texture mapping
 
-void drawTriangle(vec3 v0, vec3 v1, vec3 v2, vec2 uv0, vec2 uv1, vec2 uv2, Image& img, Image& tex)
+void drawTriangle(vec3 v0, vec3 v1, vec3 v2, vec2 uv0, vec2 uv1, vec2 uv2, float ww0inv, float ww1inv, float ww2inv, Image& img, Image& tex)
 {
 	int xmin = floorf(fmin((v0.x + 1.f) /2.f*(float)WIDTH, fmin((v1.x + 1.f) /2.f*(float)WIDTH, (v2.x + 1.f) /2.f*(float)WIDTH)));
 	xmin = xmin >= 0 ? xmin : 0; 
@@ -46,7 +46,8 @@ void drawTriangle(vec3 v0, vec3 v1, vec3 v2, vec2 uv0, vec2 uv1, vec2 uv2, Image
 				float ndotl = dot(n, L);
 				ndotl = fmax(0.f, ndotl);
 				// vec3 col = (ndotl >= 0.f) ? ndotl * vec3(1.f, 1.f, 1.f) : vec3(0.f, 0.f, 0.f);
-				vec2 uv = w0 * uv0 + w1 * uv1 + w2 * uv2;
+				float wwinv = ww0inv * w0 + ww1inv * w1 + ww2inv * w2;
+				vec2 uv = (w0 * ww0inv * uv0 + w1 * ww1inv * uv1 + ww2inv * w2 * uv2) / wwinv;
 				// vec3 col(uv.x, uv.y, 0.f);
 				vec3 col = tex.get((int)(uv.x * (float)tex.getWidth()), (int)(uv.y * (float)tex.getHeight()));
 				col *= ndotl;
@@ -79,19 +80,26 @@ void drawMesh(Mesh& mesh, Image& img, Image& tex)
 		v1.z = c + 1.f - v1.z;
 		v2.z = c + 1.f - v2.z;
 
-		v0.x /= (c + v0.z) * tanf(fov/2.f);
-		v0.y /= (c + v0.z) * tanf(fov/2.f);
-		v1.x /= (c + v1.z) * tanf(fov/2.f);
-		v1.y /= (c + v1.z) * tanf(fov/2.f);
-		v2.x /= (c + v2.z) * tanf(fov/2.f);
-		v2.y /= (c + v2.z) * tanf(fov/2.f);
+		float tanfov = tanf(fov/2.f);
+
+		float ww0 = (c + v0.z) * tanfov;
+		float ww1 = (c + v1.z) * tanfov;
+		float ww2 = (c + v2.z) * tanfov;
+
+
+		v0.x /= ww0;
+		v0.y /= ww0;
+		v1.x /= ww1;
+		v1.y /= ww1;
+		v2.x /= ww2;
+		v2.y /= ww2;
 
 		float aspectinv = (float)HEIGHT/(float)WIDTH;
 		v0.x *= aspectinv;
 		v1.x *= aspectinv;
 		v2.x *= aspectinv;
-		// TODO: multiply by proj * view matrices
-		drawTriangle(v0, v1, v2, uv0, uv1, uv2, img, tex);
+
+		drawTriangle(v0, v1, v2, uv0, uv1, uv2, 1.f/ww0, 1.f/ww1, 1.f/ww2, img, tex);
 	}
 }
 
@@ -102,7 +110,7 @@ int main() {
 	std::vector<tinyobj::material_t> materials;
 
 	std::string err;
-	tinyobj::LoadObj(&attrib, &shapes, &materials, &err, "suzanne.obj");
+	tinyobj::LoadObj(&attrib, &shapes, &materials, &err, "cube.obj");
 	tinyobj::mesh_t t_mesh = shapes[0].mesh;
 
 	Mesh mesh;
@@ -130,7 +138,7 @@ int main() {
 		zbuf[i] = +INFINITY;
 	}
 
-	Image tex = Image::load("albedo.png");
+	Image tex = Image::load("toto.png");
 	drawMesh(mesh, image, tex);
 	image.write_png("output.png");
 

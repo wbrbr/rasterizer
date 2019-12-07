@@ -11,6 +11,7 @@ struct vec2 {
 
 vec2 operator+(vec2 a, vec2 b);
 vec2 operator*(float s, vec2 v);
+vec2 operator/(vec2 v, float s);
 
 struct vec3 {
     float x, y, z;

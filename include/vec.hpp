@@ -43,5 +43,17 @@ struct vec4 {
 
 float edgeFunc(vec2 v0, vec2 v1, vec2 p);
 
+struct mat4 {
+    // column major: m[0] is the first column, m[1] second column...
+    float m[4][4];
 
+    static mat4 id();
+    static mat4 zero();
+};
+
+vec4 operator*(mat4 m, vec4 v);
+mat4 operator*(mat4 a, mat4 b);
+bool operator==(mat4 a, mat4 b);
+
+mat4 transpose(mat4 m);
 #endif

@@ -14,8 +14,6 @@ float* zbuf;
  * https://fgiesen.wordpress.com/2013/02/06/the-barycentric-conspirac/
 **/
 
-// TODO: perspective correct texture mapping
-
 void drawTriangle(vec3 v0, vec3 v1, vec3 v2, vec2 uv0, vec2 uv1, vec2 uv2, float ww0inv, float ww1inv, float ww2inv, Image& img, Image& tex)
 {
 	int xmin = floorf(fmin((v0.x + 1.f) /2.f*(float)WIDTH, fmin((v1.x + 1.f) /2.f*(float)WIDTH, (v2.x + 1.f) /2.f*(float)WIDTH)));
@@ -141,6 +139,10 @@ int main() {
 	Image tex = Image::load("toto.png");
 	drawMesh(mesh, image, tex);
 	image.write_png("output.png");
+
+	mat4 i1 = mat4::id();
+	mat4 i2 = mat4::id();
+	assert(i1*i2 == mat4::id());
 
 	delete[] zbuf;
 	return 0;
